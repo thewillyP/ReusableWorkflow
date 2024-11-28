@@ -9,6 +9,7 @@ on:
       tag:
         required: true
         type: string 
+      secrets: inherit
 
 jobs:
   docker:
