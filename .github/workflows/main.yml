@@ -9,6 +9,9 @@ on:
       tag:
         required: true
         type: string 
+      build_args:
+        required: true
+        type: string
     secrets: 
       DOCKERHUB_USERNAME:
         required: true
@@ -46,3 +49,4 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: ${{ inputs.build_args }}
