@@ -37,6 +37,9 @@ jobs:
             echo "No tags provided"
             exit 1
           fi
+      - 
+        name: Debug tags in GITHUB_ENV
+        run: echo "Tags in GITHUB_ENV ${{ env.tags }}"
       -
         name: Checkout
         uses: actions/checkout@v4
