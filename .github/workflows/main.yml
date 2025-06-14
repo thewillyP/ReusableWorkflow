@@ -26,12 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: Extract variant from build_args
-        id: extract
-        run: |
-          VARIANT=$(echo "${{ inputs.build_args }}" | grep -oP 'VARIANT=\K[^ ]+')
-          echo "variant=$VARIANT" >> $GITHUB_ENV
-      -
         name: Determine tags
         id: tags
         run: |
