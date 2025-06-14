@@ -7,12 +7,15 @@ on:
         required: true
         type: string
       tag:
-        required: true
-        type: string 
+        required: false
+        type: string
+      tags:
+        required: false
+        type: string
       build_args:
         required: true
         type: string
-    secrets: 
+    secrets:
       DOCKERHUB_USERNAME:
         required: true
       DOCKERHUB_TOKEN:
@@ -23,6 +26,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
+        name: Extract variant from build_args
+        id: extract
+        run: |
+          VARIANT=$(echo "${{ inputs.build_args }}" | grep -oP 'VARIANT=\K[^ ]+')
+          echo "variant=$VARIANT" >> $GITHUB_ENV
+      -
+        name: Determine tags
+        id: tags
+        run: |
+          if [ -n "${{ inputs.tags }}" ]; then
+            echo "tags=${{ inputs.tags }}" >> $GITHUB_ENV
+          elif [ -n "${{ inputs.tag }}" ]; then
+            echo "tags=type=raw,value=${{ inputs.tag }}" >> $GITHUB_ENV
+          else
+            echo "No tags provided"
+            exit 1
+          fi
+      -
         name: Checkout
         uses: actions/checkout@v4
       -
@@ -32,7 +53,7 @@ jobs:
         with:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.image_name }}
           tags: |
-            type=ref,event=branch,suffix=-${{ inputs.tag }}
+            ${{ env.tags }}
             type=ref,event=pr
       -
         name: Login to DockerHub
